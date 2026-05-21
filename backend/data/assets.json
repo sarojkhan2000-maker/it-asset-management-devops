@@ -12,5 +12,12 @@
     "ipAddress": "2.2.2.2",
     "ownerTeam": "team 2",
     "createdAt": "2026-05-21T10:19:11.850Z"
+  },
+  {
+    "id": 1779361176746,
+    "serverName": "server 4",
+    "ipAddress": "4.4.4.4",
+    "ownerTeam": "team 4",
+    "createdAt": "2026-05-21T10:59:36.746Z"
   }
 ]

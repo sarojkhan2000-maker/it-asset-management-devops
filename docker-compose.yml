@@ -1,0 +1,16 @@
+services:
+  backend:
+    build: ./backend
+    container_name: asset-backend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./backend/data:/app/data
+
+  frontend:
+    build: ./frontend
+    container_name: asset-frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
