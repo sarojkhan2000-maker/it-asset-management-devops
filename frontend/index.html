@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>IT Asset Management Portal</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>IT Asset Management Portal</h1>
+
+  <div class="form-box">
+    <input id="serverName" placeholder="Server Name">
+    <input id="ipAddress" placeholder="IP Address">
+    <input id="ownerTeam" placeholder="Owner Team">
+    <button onclick="addAsset()">Add Asset</button>
+  </div>
+
+  <input id="searchBox" placeholder="Search asset..." onkeyup="searchAssets()">
+
+  <table>
+    <thead>
+      <tr>
+        <th>Server Name</th>
+        <th>IP Address</th>
+        <th>Owner Team</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="assetTable"></tbody>
+  </table>
+
+  <script src="app.js"></script>
+</body>
+</html>
