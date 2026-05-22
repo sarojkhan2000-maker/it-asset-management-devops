@@ -1,0 +1,48 @@
+name: Build and Deploy to AKS
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Azure login
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Login to ACR
+        run: az acr login --name ${{ secrets.ACR_NAME }}
+
+      - name: Build frontend image
+        run: docker build -t ${{ secrets.ACR_LOGIN_SERVER }}/asset-frontend:${{ github.sha }} ./frontend
+
+      - name: Build backend image
+        run: docker build -t ${{ secrets.ACR_LOGIN_SERVER }}/asset-backend:${{ github.sha }} ./backend
+
+      - name: Push frontend image
+        run: docker push ${{ secrets.ACR_LOGIN_SERVER }}/asset-frontend:${{ github.sha }}
+
+      - name: Push backend image
+        run: docker push ${{ secrets.ACR_LOGIN_SERVER }}/asset-backend:${{ github.sha }}
+
+      - name: Get AKS credentials
+        run: |
+          az aks get-credentials \
+            --resource-group ${{ secrets.AKS_RESOURCE_GROUP }} \
+            --name ${{ secrets.AKS_CLUSTER_NAME }} \
+            --overwrite-existing
+
+      - name: Deploy to AKS
+        run: |
+          kubectl set image deployment/frontend-deployment frontend=${{ secrets.ACR_LOGIN_SERVER }}/asset-frontend:${{ github.sha }} -n asset-app
+          kubectl set image deployment/backend-deployment backend=${{ secrets.ACR_LOGIN_SERVER }}/asset-backend:${{ github.sha }} -n asset-app
+          kubectl rollout status deployment/frontend-deployment -n asset-app
+          kubectl rollout status deployment/backend-deployment -n asset-app
